@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <title>Leire — Variables (Refuerzo)</title>
+    <script src="https://cdn.jsdelivr.net/npm/p5@1.9.0/lib/p5.min.js"></script>
+  </head>
+
+  <body>
+    <script>
+        
+      let centerX, CenterY, sunSize, R1;
+      let mercuryR, mercuryD, mercuryTheta, mercuryOmega;
+      let venusR, venusD, venusTheta, venusOmega;
+      let earthR, earthD, earthTheta, earthOmega;
+      let marsR, marsD, marsTheta, marsOmega;
+      let jupiterR, jupiterD, jupiterTheta, jupiterOmega;
+      let saturnR, saturnD, saturnTheta, saturnOmega;
+      let uranusR, uranusD, uranusTheta, uranusOmega;
+      let neptuneR, neptuneD, neptuneTheta, neptuneOmega;
+      
+
+      function setup() {
+        createCanvas(1700, 900);
+          
+          centerX= width/2;
+          centerY= height/2;
+          
+          sunSize= 0.20*min(width, height);
+          R1=0.12*min(width, height);
+          
+          
+        //mercurio
+          mercuryR= 1*R1;
+           mercuryD= 0.10*sunSize;
+           mercuryTheta=0;
+           mercuryOmega=0.030;
+        
+        //venus
+        venusR= 2*R1;
+         venusD= 0.25*sunSize;
+        venusTheta= PI/3;
+        venusOmega=0.012;
+        
+        //tierra
+         earthR=3*R1;
+         earthD=0.26*sunSize;
+         earthTheta= PI/2;
+         earthOmega= 0.010;
+        
+        //marte
+         marsR=4*R1;
+        marsD=0.14*sunSize;
+        marsTheta= PI;
+        marsOmega= 0.008;
+       
+       
+        //jupiter
+          jupiterR=5*R1;
+          jupiterD=0.70*sunSize;
+          jupiterTheta=4*PI/3;
+          jupiterOmega= 0.004;
+        
+        //saturno
+           saturnR=6*R1;
+            saturnD=0.60*sunSize;
+           saturnTheta= 5*PI/3;
+           saturnOmega= 0.003;
+        
+        //urano
+        uranusR=7*R1;
+         uranusD=0.40*sunSize;
+        uranusTheta= 2.2*PI;
+        uranusOmega= 0.002;
+        
+        //neptuno
+        neptuneR=8*R1;
+        neptuneD=0.38*sunSize;
+        neptuneTheta=2.6*PI;
+        neptuneOmega=0.0015;
+      }
+      
+      
+      function draw() {
+   
+        background(18,18,69);
+        noStroke();
+        
+       //sol
+        fill(255,248,71);
+        ellipse(centerX, centerY, sunSize,sunSize);
+       
+       //mercurio
+        fill(171, 161, 171);
+
+        let mercuryX = centerX + mercuryR * cos(mercuryTheta);
+        let mercuryY = centerY + mercuryR * sin(mercuryTheta);
+        ellipse(mercuryX, mercuryY, mercuryD, mercuryD);
+         mercuryTheta += mercuryOmega;
+       
+       
+       //venus
+        fill(158,127,100);
+       
+       let venusX= centerX + venusR *cos(venusTheta);
+       let venusY= centerY + venusR *sin(venusTheta);
+       ellipse(venusX, venusY, venusD, venusD);
+        venusTheta += venusOmega;
+      
+       
+       //earth
+       fill(62, 123, 163);
+       let earthX= centerX + earthR *cos(earthTheta);
+       let earthY= centerY + earthR *sin(earthTheta);
+       ellipse(earthX, earthY, earthD, earthD);
+       earthTheta += earthOmega;
+       
+       
+       //mars
+       fill(214,85,19);
+       let marsX= centerX + marsR *cos(marsTheta);
+       let marsY= centerY + marsR *sin(marsTheta);
+       ellipse(marsX, marsY, marsD, marsD);
+       marsTheta += marsOmega;
+       
+       //jupiter
+       fill(237, 159, 114);
+       let jupiterX= centerX + jupiterR *cos(jupiterTheta);
+       let jupiterY= centerY + jupiterR *sin(jupiterTheta);
+       ellipse(jupiterX, jupiterY, jupiterD, jupiterD);
+       jupiterTheta += jupiterOmega;
+       
+       
+       //saturn
+       fill(255,254,181);
+       let saturnX= centerX + saturnR *cos(saturnTheta);
+       let saturnY= centerX + saturnR *sin(saturnTheta);
+       ellipse(saturnX, saturnY, saturnD, saturnD);
+       saturnTheta += saturnOmega;
+       
+       
+       //uranus
+       fill(27, 120,133);
+       let uranusX= centerX + saturnR *cos(uranusTheta);
+       let uranusY= centerY + uranusR *sin(uranusTheta);
+       ellipse(uranusX, uranusY, uranusD, uranusD);
+        uranusTheta += uranusOmega;
+       
+       
+      //neptune
+       fill(27,38,133);
+       let neptuneX= centerX + neptuneR *cos(neptuneTheta);
+       let neptuneY= centerY + neptuneR *sin(neptuneTheta);
+       ellipse(neptuneX, neptuneY, neptuneD, neptuneD);
+       uranusTheta += uranusOmega;
+       
+
+      }
+      </script>
+    </body>
+</html>
