@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="es">
+ <head>
+<meta charset="utf-8" />
+<title>Leire — Variables (Refuerzo)</title>
+<script src="https://cdn.jsdelivr.net/npm/p5@1.9.0/lib/p5.min.js"></script>
+ </head>
+
+<body>
+<script>
+    let centerX, centerY, sunSize;
+    let earthR, earthD, earthTheta, earthOmega, earthX, earthY;
+    let moonR, moonD, moonTheta, moonOmega, moonX, moonY;
+
+function setup() {
+createCanvas(1700,900);
+    centerX= width/ 2;
+    centerY= height/ 2;
+    sunSize= 0.20*min(width, height);
+    
+    
+//tierra
+earthR = 0.38 * min(width, height);
+earthD = 0.6 * sunSize;          
+earthTheta = PI / 2;               
+earthOmega = 0.010;
+
+//luna
+moonR = 0.50 *earthD; 
+moonD = 0.27 *earthD;
+moonTheta= 0;
+moonOmega=0.080;
+
+}
+function draw(){
+    background(18,18,69);
+    noStroke();
+    
+//sol
+fill(255,248,71);
+ellipse(centerX, centerY, sunSize,sunSize);
+
+noFill();
+  stroke(120, 120, 120, 80);
+  strokeWeight(1);
+  circle(centerX, centerY, 2 * earthR);
+
+    
+earthX= centerX + cos(earthTheta) * earthR;
+earthY= centerY + sin(earthTheta) * earthR;
+moonX= earthX + cos(moonTheta) * moonR;
+moonY= earthY + sin(moonTheta) * moonR;
+
+//tierra 
+fill(62, 123, 163);
+ellipse(earthX, earthY, earthD, earthD);
+   
+//luna
+fill(181,176,173);
+ellipse(moonX, moonY, moonD, moonD);
+ 
+earthTheta += earthOmega;
+moonTheta +=  moonOmega;
+    
+    
+    
+ 
+}
+</script>
+</body>
+</html>
