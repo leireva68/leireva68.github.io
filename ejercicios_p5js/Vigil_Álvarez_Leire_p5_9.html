@@ -21,14 +21,14 @@ createCanvas(1700,900);
     
 //tierra
 earthR = 0.38 * min(width, height);
-earthD = 0.6 * sunSize;          
-earthTheta = PI / 2;               
+earthD = 0.5 * sunSize;          
+earthTheta = 0.080;               
 earthOmega = 0.010;
 
 //luna
-moonR = 0.50 *earthD; 
+moonR = 1 *earthD; 
 moonD = 0.27 *earthD;
-moonTheta= 0;
+moonTheta= 2; 
 moonOmega=0.080;
 
 }
@@ -44,6 +44,7 @@ noFill();
   stroke(120, 120, 120, 80);
   strokeWeight(1);
   circle(centerX, centerY, 2 * earthR);
+  circle (earthX, earthY, 2* moonR);
 
     
 earthX= centerX + cos(earthTheta) * earthR;
@@ -62,9 +63,6 @@ ellipse(moonX, moonY, moonD, moonD);
 earthTheta += earthOmega;
 moonTheta +=  moonOmega;
     
-    
-    
- 
 }
 </script>
 </body>
