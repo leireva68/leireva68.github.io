@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="es">
+ <head>
+<meta charset="utf-8" />
+<title>Leire — Variables (Refuerzo)</title>
+<script src="https://cdn.jsdelivr.net/npm/p5@1.9.0/lib/p5.min.js"></script>
+ </head>
+
+<body>
+<script>
+    
+//variables del sol y la luna
+let xS, yS, dS, rS, vS;   // Sol
+let xL, yL, dL, rL, vL;   // Luna
+    
+function setup() {
+  createCanvas(800, 800);
+dS = min(width, height) * 0.20; //Sol
+rS = dS / 2;
+xS = -rS; //tamaño del Sol
+yS = height / 4; //entra por la izquierda
+vS = width / 400; //altura
+
+    
+dL = dS * 0.5; //luna
+rL = dL / 2;
+xL = -width - rL;
+yL = height / 3; 
+vL = vS;
+}
+
+function draw() {
+if (xS <= width + rS) {
+background(0, 0, 255); // azul
+}
+else { 
+background(10);
+}
+
+//suelo
+noStroke(); 
+fill(20, 120, 40); 
+rect(0, 0.8 *height, width, 0.2 *height);
+    
+//sol
+noStroke(); 
+fill(245, 234, 10);
+circle(xS, yS, dS);
+    
+//Luna
+noStroke(); 
+fill(200); 
+circle(xL, yL, dL);
+
+
+    
+xS = xS + vS;
+xL = xL + vL;
+
+if (xS >= 2 * width + rS) { 
+xS = -rS; 
+xL = -width - rL; 
+  }
+    
+}
+    
+    
+    
+    
+</script>
+</body>
+</html>
