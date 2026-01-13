@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="es">
+ <head>
+<meta charset="utf-8" />
+<title>Leire — Variables (Refuerzo)</title>
+<script src="https://cdn.jsdelivr.net/npm/p5@1.9.0/lib/p5.min.js"></script>
+ </head>
+
+<body>
+<script>
+    
+//variables del sol y la luna
+let xS, yS, dS, rS, vS;   // Sol
+let xL, yL, dL, rL, vL;   // Luna
+let dia, mes, anio;  //calendario
+let xP, yP;        // posición del personaje
+let S;             // tamaño base del stickman
+let vP;            // velocidad horizontal (izq/der)
+
+let groundY;       // altura del suelo (coincide con tu rectángulo de suelo en T12)
+let vY;            // velocidad vertical del salto
+let jumpV;         // impulso del salto (valor negativo para subir)
+let g;             // gravedad (valor positivo para bajar)
+    
+function setup() {
+  createCanvas(800, 800);
+dS = min(width, height) * 0.20; //Sol
+rS = dS / 2;
+xS = -rS; //tamaño del Sol
+yS = height / 4; //entra por la izquierda
+vS = width / 40; //altura
+dia = 5;
+mes = 9;
+anio = 2008;
+    
+dL = dS * 0.5; //luna
+rL = dL / 2;
+xL = -width - rL;
+yL = height / 3; 
+vL = vS;
+
+// Suelo (debe coincidir con el suelo que ya dibujas en T12)
+groundY = 0.80 * height;
+
+// Stickman: tamaño y posición inicial
+S  = 0.12 * min(width, height);
+xP = 0.25 * width;
+yP = groundY;                 // IMPORTANTE: aquí yP será la posición de los pies
+
+// Movimiento horizontal
+vP = width / 150;
+
+// Salto (valores sencillos)
+vY = 0;
+jumpV = -0.030 * height;      // impulso hacia arriba
+g = 0.0016 * height;          // aceleración hacia abajo (pequeña)
+
+ rHead = 0.2 * S;
+ bodyL = 0.6 * S;
+ armL = 0.45 * S;
+ legL = 0.55 * S;
+}
+
+function draw() {
+if (xS <= width + rS) {
+background(0, 0, 255); // azul
+}
+else { 
+background(10);
+}
+
+//suelo
+noStroke(); 
+fill(20, 120, 40); 
+rect(0, 0.8 *height, width, 0.2 *height);
+    
+//sol
+noStroke(); 
+fill(245, 234, 10);
+circle(xS, yS, dS);
+    
+//Luna
+noStroke(); 
+fill(200); 
+circle(xL, yL, dL);
+    
+xS = xS + vS;
+xL = xL + vL;
+
+if (xS >= 2 * width + rS) { 
+xS = -rS; 
+xL = -width - rL; 
+ 
+  dia = dia + 1;  // Incremento la variable día.
+
+ if (dia > 30) { dia = 1;    mes = mes + 1;   }  // Reseteo día e incremento mes si me paso de 30 días
+
+ if (mes > 12) { mes = 1;    anio = anio + 1; }   // Reseteo mes e incremento año si me paso de 12 meses
+  }
+
+// Movimiento horizontal
+    if (keyIsDown(LEFT_ARROW)) xP -= vP;
+    if (keyIsDown(RIGHT_ARROW)) xP += vP;
+    xP = constrain(xP, 0, width);
+
+    // Salto
+    yP += vY;
+    vY += g;
+
+    if (yP > groundY) {
+        yP = groundY;
+        vY = 0;
+    }
+
+
+    hipY = yP - legL;          // Recalcular cuerpo
+    shoulderY = hipY - bodyL;
+    headY = shoulderY - rHead;
+   
+    
+// Muñeco
+    stroke(255);
+    strokeWeight(0.06 * S);
+    noFill();
+
+    circle(xP, headY, 2 * rHead);
+    line(xP, shoulderY, xP, hipY);
+
+    line(xP - 0.25 * S, shoulderY, xP + 0.25 * S, shoulderY);
+    line(xP - 0.25 * S, shoulderY, xP - 0.25 * S, shoulderY + armL);
+    line(xP + 0.25 * S, shoulderY, xP + 0.25 * S, shoulderY + armL);
+    line(xP, hipY, xP - 0.18 * S, yP);
+    line(xP, hipY, xP + 0.18 * S, yP);
+
+// Color dependiente de la posición del sol.
+if (xS <= width + rS) { fill(0);    }
+ else { fill(255); }
+
+ // Elegimos un tamaño de letra que se vea bien
+textSize(20);
+
+text("Fecha: (" + dia + ") (" + mes + ") (" + anio + ")", 10, 20);
+    
+
+if (keyIsDown(LEFT_ARROW)) {
+  xP = xP - vP;
+} else if (keyIsDown(RIGHT_ARROW)) {
+  xP = xP + vP;
+}
+
+if (xP < 0) {
+  xP = 0;
+}
+if (xP > width) {
+  xP = width;
+}
+    
+}
+    
+    
+    
+    
+function keyPressed() {
+  if (keyCode === UP_ARROW) {
+    // Solo saltamos si estamos en el suelo
+    if (yP === groundY) {
+      vY = jumpV;
+    }
+  }
+}
+    
+
+    
+    
+    
+    
+</script>
+</body>
+</html>
