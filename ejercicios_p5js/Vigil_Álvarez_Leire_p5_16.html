@@ -1,0 +1,297 @@
+<!doctype html>
+<html lang="es">
+ <head>
+<meta charset="utf-8" />
+<title>Leire — Variables (Refuerzo)</title>
+<script src="https://cdn.jsdelivr.net/npm/p5@1.9.0/lib/p5.min.js"></script>
+ </head>
+
+<body>
+<script>
+    
+//variables del sol y la luna
+let xS, yS, dS, rS, vS;   // Sol
+let xL, yL, dL, rL, vL;   // Luna
+let dia, mes, anio;  //calendario
+let xP, yP;        // posición del personaje
+let S;             // tamaño base del stickman
+let vP;            // velocidad horizontal (izq/der)
+
+let groundY;       // altura del suelo (coincide con tu rectángulo de suelo en T12)
+let vY;            // velocidad vertical del salto
+let jumpV;         // impulso del salto (valor negativo para subir)
+let g;             // gravedad (valor positivo para bajar)
+
+//disparo
+let xD, yD;     // posición
+let tD;         // tamaño
+let vD;         // velocidad
+let disparoActivo; // estado (true / false)
+// Objetivo
+let xO, yO;   // posición
+let wO, hO;   // tamaño
+let vO;       // velocidad horizontal
+    
+//contador de puntos
+let puntos; 
+    
+
+function setup() {
+  createCanvas(800, 800);
+dS = min(width, height) * 0.20; //Sol
+rS = dS / 2;
+xS = -rS; //tamaño del Sol
+yS = height / 4; //entra por la izquierda
+vS = width / 150; //altura
+dia = 5;
+mes = 9;
+anio = 2008;
+    
+dL = dS * 0.5; //luna
+rL = dL / 2;
+xL = -width - rL;
+yL = height / 3; 
+vL = vS;
+
+// Suelo (debe coincidir con el suelo que ya dibujas en T12)
+groundY = 0.80 * height;
+
+// Stickman: tamaño y posición inicial
+S  = 0.12 * min(width, height);
+xP = 0.25 * width;
+yP = groundY;                 // IMPORTANTE: aquí yP será la posición de los pies
+
+// Movimiento horizontal
+vP = width / 150;
+
+// Salto (valores sencillos)
+vY = 0;
+jumpV = -0.030 * height;      // impulso hacia arriba
+g = 0.0016 * height;          // aceleración hacia abajo (pequeña)
+
+ rHead = 0.2 * S;
+ bodyL = 0.6 * S;
+ armL = 0.45 * S;
+ legL = 0.55 * S;
+    
+// Disparo
+disparoActivo = false;
+tD = 0.02 * min(width, height);
+vD = 0.03 * height;
+
+// Objetivo
+wO = 0.1 * width;
+hO = 0.06 * height;
+
+yO = random(0.2 * height, 0.35 * height);
+
+xO = -wO;                // empieza fuera del canvas
+vO = random(2, 5);       // velocidad inicial hacia la derecha
+
+//contador de puntos
+puntos= 0;
+    
+}
+
+function draw() {
+
+ //Decidir día / noche
+  if (xS <= width + rS) {
+    background(0, 0, 255); // día
+  } else {
+    background(10);       // noche
+  }
+
+// Suelo
+  noStroke();
+  fill(20, 120, 40);
+  rect(0, groundY, width, height - groundY);
+//Dibujar sol y luna
+  noStroke();
+  fill(245, 234, 10);
+  circle(xS, yS, dS);
+
+  fill(200);
+  circle(xL, yL, dL);
+
+//Mover sol y luna
+  xS += vS;
+  xL += vL;
+
+// Reinicio + calendario
+  if (xS >= 2 * width + rS) {
+    xS = -rS;
+    xL = -width - rL;
+
+    dia++;
+    if (dia > 30) {
+      dia = 1;
+      mes++;
+    }
+    if (mes > 12) {
+      mes = 1;
+      anio++;
+    }
+  }
+
+  //Lógica del stickman
+  if (keyIsDown(LEFT_ARROW)) xP -= vP;
+  if (keyIsDown(RIGHT_ARROW)) xP += vP;
+  xP = constrain(xP, 0, width);
+
+  // Salto
+  yP += vY;
+  vY += g;
+
+  if (yP > groundY) {
+    yP = groundY;
+    vY = 0;
+  }
+
+  // Recalcular cuerpo
+  hipY = yP - legL;
+  shoulderY = hipY - bodyL;
+  headY = shoulderY - rHead;
+
+  //dibujar stickman
+  dibujarstickman();
+
+  // calendario
+  if (xS <= width + rS) fill(0);
+  else fill(255);
+
+  textSize(20);
+  text("Fecha: (" + dia + ") (" + mes + ") (" + anio + ")", 10, 20);
+
+
+//Movimiento del objetivo
+xO += vO;
+
+//Si sale por la derecha
+if (xO > width + wO) {
+  xO = -wO;
+
+// Nueva velocidad aleatoria hacia la derecha
+  vO = random(2, 5);
+}
+
+//Si sale por la izquierda
+if (xO < -wO) {
+  xO = width + wO;
+
+// Nueva velocidad aleatoria hacia la izquierda
+  vO = random(-5, -2);
+}
+
+// Dibujar objetivo
+dibujarObjetivo();
+    
+
+//Movimiento del disparo
+if (disparoActivo) {
+yD -= vD;
+
+// Si sale por arriba, se desactiva
+if (yD < 0) {
+disparoActivo = false;
+  }
+}
+// Dibujar disparo
+if (disparoActivo) {
+  dibujarDisparo();
+}
+// Impacto entre disparo y objetivo
+ if (
+xD > xO &&
+xD < xO + wO &&
+ yD > yO &&
+yD < yO + hO
+ ) {
+puntos++; // Incrementar los puntos
+ disparoActivo = false; // Desactivar el disparo
+
+ // Reiniciar el objetivo con nueva dirección y velocidad
+if (vO > 0) {
+xO = width + wO;
+vO = -random(1, 3);
+ } else {
+xO = -wO;
+ vO = random(1, 3);
+ }
+
+ yO = random(0.2 * height, 0.35 * height); // Nueva posición vertical aleatoria
+ }
+ // Dibujar puntos
+dibujarPuntos();
+ }   
+function dibujarDisparo() {
+  noStroke();
+  fill(255, 0, 0);
+  circle(xD, yD, tD);
+}
+
+function dibujarObjetivo() {
+  noStroke();
+  fill(255, 100, 0);
+  rect(xO, yO, wO, hO, 10);
+}
+
+ function dibujarstickman() {
+
+// Muñeco
+    stroke(255);
+    strokeWeight(0.06 * S);
+    noFill();
+
+    circle(xP, headY, 2 * rHead);
+    line(xP, shoulderY, xP, hipY);
+
+    line(xP - 0.25 * S, shoulderY, xP + 0.25 * S, shoulderY);
+    line(xP - 0.25 * S, shoulderY, xP - 0.25 * S, shoulderY + armL);
+    line(xP + 0.25 * S, shoulderY, xP + 0.25 * S, shoulderY + armL);
+    line(xP, hipY, xP - 0.18 * S, yP);
+    line(xP, hipY, xP + 0.18 * S, yP);
+
+
+
+if (xP < 0) {
+  xP = 0;
+}
+if (xP > width) {
+  xP = width;
+
+}
+
+ }
+    
+function dibujarPuntos() {
+    fill(255);
+    noStroke();
+    textSize(20);
+    text("Puntos: " + puntos, 10, 50);
+}        
+    
+    
+    
+function keyPressed() {
+  
+  
+  // Salto
+if (keyCode === UP_ARROW) {
+if (yP === groundY) {
+ vY = jumpV;
+    }
+  }
+
+// Disparo
+if (key === ' ' && disparoActivo === false) {
+xD = xP;           
+yD = headY;        
+disparoActivo = true;
+  }
+}
+    
+  
+</script>
+</body>
+</html>
