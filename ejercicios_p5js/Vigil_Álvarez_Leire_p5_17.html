@@ -1,0 +1,259 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <title>Leire — T17 corregida</title>
+  <script src="https://cdn.jsdelivr.net/npm/p5@1.9.0/lib/p5.min.js"></script>
+</head>
+
+<body>
+<script>
+
+// VARIABLES
+
+// Sol y luna
+let xS, yS, dS, rS, vS;
+let xL, yL, dL, rL, vL;
+let dia, mes, anio;
+
+// Stickman
+let xP, yP;
+let S, vP;
+let groundY;
+let vY, jumpV, g;
+
+// Cuerpo
+let rHead, bodyL, armL, legL;
+
+// Hitbox stickman
+let wP = 30;
+let hP = 70;
+
+// Disparo
+let xD, yD, tD, vD;
+let disparoActivo;
+
+// Objetivo
+let xO, yO, wO, hO, vO;
+
+// Puntos
+let puntos;
+
+// Obstáculo
+let xB, yB, wB, hB, vB;
+
+// Estado
+let gameOver;
+
+
+function setup() {
+  createCanvas(800, 800);
+
+  // Sol
+  dS = min(width, height) * 0.2;
+  rS = dS / 2;
+  xS = -rS;
+  yS = height / 4;
+  vS = width / 150;
+
+  // Luna
+  dL = dS * 0.5;
+  rL = dL / 2;
+  xL = -width - rL;
+  yL = height / 3;
+  vL = vS;
+
+  dia = 5;
+  mes = 9;
+  anio = 2008;
+
+  // Suelo
+  groundY = height * 0.8;
+
+  // Stickman
+  S = 0.12 * min(width, height);
+  xP = width * 0.25;
+  yP = groundY;
+  vP = width / 150;
+
+  vY = 0;
+  jumpV = -0.03 * height;
+  g = 0.0016 * height;
+
+  rHead = 0.2 * S;
+  bodyL = 0.6 * S;
+  armL = 0.45 * S;
+  legL = 0.55 * S;
+
+  // Disparo
+  disparoActivo = false;
+  tD = 0.02 * min(width, height);
+  vD = 0.03 * height;
+
+  // Objetivo
+  wO = 0.1 * width;
+  hO = 0.06 * height;
+  xO = -wO;
+  yO = random(0.2 * height, 0.35 * height);
+  vO = random(2, 5);
+
+  // Puntos
+  puntos = 0;
+
+  // Obstáculo
+  wB = 40;
+  hB = 40;
+  xB = -wB;
+  yB = groundY - hB;
+  vB = 4;
+
+  gameOver = false;
+}
+
+
+function draw() {
+
+  // Fondo
+  if (xS <= width + rS) background(0, 0, 255);
+  else background(10);
+
+  // Suelo
+  noStroke();
+  fill(20, 120, 40);
+  rect(0, groundY, width, height - groundY);
+
+  // Sol y luna (dibujo)
+  fill(245, 234, 10);
+  circle(xS, yS, dS);
+  fill(200);
+  circle(xL, yL, dL);
+
+
+  if (gameOver == false) {
+
+ // Sol y luna
+ xS += vS;
+  xL += vL;
+
+ if (xS >= 2 * width + rS) {
+ xS = -rS;
+ xL = -width - rL;
+  dia++;
+  if (dia > 30) { dia = 1; mes++; }
+if (mes > 12) { mes = 1; anio++; }  }
+
+// Stickman
+if (keyIsDown(LEFT_ARROW)) xP -= vP;
+if (keyIsDown(RIGHT_ARROW)) xP += vP;
+xP = constrain(xP, 0, width);
+
+yP += vY;
+vY += g;
+if (yP > groundY) {
+yP = groundY;
+vY = 0;
+}
+
+// Objetivo
+xO += vO;
+if (xO > width + wO) {
+xO = -wO;
+vO = random(2, 5);
+}
+
+// Obstáculo
+xB += vB;
+if (xB > width + wB) {
+xB = -wB;
+vB = random(3, 6);
+}
+
+// Colisión stickman – obstáculo
+let stickLeft = xP - wP / 2;
+let stickRight = xP + wP / 2;
+let stickTop = yP - hP;
+let stickBottom = yP;
+
+let obsLeft = xB;
+let obsRight = xB + wB;
+let obsTop = yB;
+let obsBottom = yB + hB;
+
+if (
+stickRight > obsLeft &&
+stickLeft < obsRight &&
+stickBottom > obsTop &&
+stickTop < obsBottom
+    ) {
+gameOver = true;
+}
+  }
+
+
+
+  dibujarStickman();
+  dibujarObjetivo();
+  dibujarObstaculo();
+  dibujarPuntos();
+
+  fill(255);
+  textSize(20);
+  text("Fecha: (" + dia + ") (" + mes + ") (" + anio + ")", 10, 20);
+
+  if (gameOver) dibujarGameOver();
+}
+
+// ---------------- FUNCIONES ----------------
+
+function dibujarStickman() {
+  let hipY = yP - legL;
+  let shoulderY = hipY - bodyL;
+  let headY = shoulderY - rHead;
+
+  stroke(255);
+  strokeWeight(0.06 * S);
+  noFill();
+
+  circle(xP, headY, 2 * rHead);
+  line(xP, shoulderY, xP, hipY);
+  line(xP - 0.25 * S, shoulderY, xP + 0.25 * S, shoulderY);
+  line(xP, hipY, xP - 0.18 * S, yP);
+  line(xP, hipY, xP + 0.18 * S, yP);
+}
+
+function dibujarObjetivo() {
+  noStroke();
+  fill(255, 100, 0);
+  rect(xO, yO, wO, hO, 10);
+}
+
+function dibujarObstaculo() {
+  fill(120);
+  rect(xB, yB, wB, hB);
+}
+
+function dibujarPuntos() {
+  fill(255);
+  textSize(20);
+  text("Puntos: " + puntos, 10, 50);
+}
+
+function dibujarGameOver() {
+  textAlign(CENTER);
+  textSize(48);
+  fill(255, 0, 0);
+  text("GAME OVER", width / 2, height / 2);
+  textSize(24);
+  fill(255);
+  text("Puntos: " + puntos, width / 2, height / 2 + 40);
+}
+
+function keyPressed() {
+  if (keyCode === UP_ARROW && yP === groundY) {
+    vY = jumpV;
+  }
+}
+
+</script>
+</body>
+</html>
