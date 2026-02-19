@@ -36,7 +36,32 @@
   <div>
    <h3> Explicación de cómo funciona el código</h3>
 
-   <p> Sustituye este párrafo por una explicación, en varios párrafos de lo que hace el script, bloque a bloque, que habéis utilizado para la tarea. Es un script muy avanzado para vosotros, pero sí estáis en condiciones de analizarlo parte a parte y ver que hace cada parte. Cuanto mejor esté explicado, mejor será la nota en la tarea. Una explicación de un párrafo tendrá poca nota </p>
+   <p> El archivo HTML tiene una estructura sencilla que incluye un botón, un video y un canvas (lienzo) donde se mostrarán las detecciones.
+
+El botón "Iniciar cámara" permite activar la cámara del dispositivo.
+
+El video muestra lo que capta la cámara.
+
+El canvas es una especie de superficie en blanco donde se dibujan las cajas alrededor de los objetos que el modelo de inteligencia artificial detecta.
+
+La función initCamera() se encarga de pedir permiso para usar la cámara del dispositivo. Al hacer clic en el botón, el navegador muestra un mensaje pidiendo permiso. Si el usuario lo acepta, se muestra el video de la cámara en la página.
+
+Se usa navigator.mediaDevices.getUserMedia() para obtener el video desde la cámara.
+
+Una vez que la cámara está activa, se carga un modelo de IA llamado COCO-SSD. Este modelo puede identificar varios objetos como personas, perros, coches, etc.
+
+El modelo se carga con ml5.objectDetector("cocossd"). Este es un modelo preentrenado que ya sabe cómo identificar una lista de objetos comunes.
+
+La función loopDetect() se ejecuta constantemente para revisar lo que está viendo la cámara.
+
+Cada vez que se detecta algo, el modelo devuelve una lista con los objetos encontrados. Para cada objeto, dibuja una caja alrededor de él en el canvas (el lienzo).
+
+También muestra una etiqueta con el nombre del objeto y el porcentaje de confianza que tiene el modelo en la detección (por ejemplo, "persona (85%)").
+
+La función draw() se encarga de dibujar esas cajas y etiquetas en el canvas. Cada objeto detectado recibe un cuadro de color y su nombre con el porcentaje de confianza al lado.
+
+También se guarda el objeto con la mayor confianza en la variable bestEl para mostrar cuál es la mejor detección en ese momento.
+En los navegadores, por razones de seguridad, se requiere que el usuario haga una acción (como pulsar un botón) para activar la cámara. Esto evita que los sitios web puedan acceder a la cámara sin que el usuario lo sepa. </p>
 
   </div>
 
