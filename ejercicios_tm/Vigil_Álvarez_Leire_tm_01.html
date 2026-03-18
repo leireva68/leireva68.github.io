@@ -45,9 +45,28 @@
      A continuación detallo los errores detectados en el proceso
     </p>
     <ol>
-      <li>Fallo 1: …</li>
-      <li>Fallo 2: …</li>
-      <li>Fallo 3: …</li>
+      <li>Fallo 1: Predice “neutral” cuando hay objeto parcialmente visible
+
+Qué ocurrió: El modelo marcó neutral aunque sostenía el objeto, porque solo se veía una parte.
+
+Cuándo: Cuando el objeto estaba cubierto por la mano o parte del cuerpo.
+
+Por qué pasó: La máquina no tiene suficientes ejemplos de objetos parcialmente visibles, así que no reconoce correctamente la clase objeto.</li>
+      
+      <li>Fallo 2:Fallo 2: Confunde el objeto con el fondo
+
+Qué ocurrió: El modelo predijo neutral o con baja confianza objeto cuando el fondo tenía un patrón similar al objeto (por ejemplo, una pared con colores parecidos a tu objeto).
+
+Cuándo: Con iluminación brillante o fondo con textura/patrón.
+
+Por qué pasó: El modelo aprende patrones visuales; si el fondo se parece mucho al objeto, no sabe distinguirlos. </li>
+      <li>Fallo 3: Fallo 3: No reconoce el objeto a distancia o ángulo inusual
+
+Qué ocurrió: El modelo predijo neutral cuando alejaste el objeto de la cámara o lo giraste lateralmente.
+
+Cuándo: Al alejar el objeto más de lo habitual o mostrarlo de lado.
+
+Por qué pasó: No se entrenaron suficientes ejemplos desde distintos ángulos y distancias, así que el modelo solo reconoce la clase objeto en posiciones similares a las que aprendió. </li>
     </ol>
   </div>
 
